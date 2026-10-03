@@ -1,0 +1,218 @@
+[
+  {
+    "id": "UT-01",
+    "group": "unit",
+    "module": "Authentication",
+    "input": "Valid email + correct password",
+    "expected": "User authenticated; redirected to role dashboard",
+    "actual": "Login returned a JWT and role \"Tenant\"; token accepted by protected endpoint",
+    "pass": true
+  },
+  {
+    "id": "UT-02",
+    "group": "unit",
+    "module": "Authentication",
+    "input": "Invalid password (3rd attempt)",
+    "expected": "Account temporarily locked; error shown",
+    "actual": "Attempts 1-2 rejected (401); attempt 3 locked account (423); correct password refused while locked (423)",
+    "pass": true
+  },
+  {
+    "id": "UT-03",
+    "group": "unit",
+    "module": "Maintenance Request",
+    "input": "All required fields completed",
+    "expected": "Request saved with status 'Received'",
+    "actual": "Request #7 saved with status \"Received\" and a submission timestamp",
+    "pass": true
+  },
+  {
+    "id": "UT-04",
+    "group": "unit",
+    "module": "Maintenance Request",
+    "input": "Description field left empty",
+    "expected": "Submission blocked; validation error shown",
+    "actual": "Rejected with 400 (\"Description must be 10 to 500 characters\"); no record created",
+    "pass": true
+  },
+  {
+    "id": "UT-05",
+    "group": "unit",
+    "module": "Messaging",
+    "input": "Message content of 1 to 1,000 characters",
+    "expected": "Message saved and displayed in thread",
+    "actual": "1-char and 1,000-char messages saved and visible in thread; 1,001-char and empty messages rejected",
+    "pass": true
+  },
+  {
+    "id": "VAL-01",
+    "group": "validation",
+    "module": "Validation (Table 3.2)",
+    "input": "Invalid email format",
+    "expected": "Rejected with clear error",
+    "actual": "Enter a valid email address",
+    "pass": true
+  },
+  {
+    "id": "VAL-02",
+    "group": "validation",
+    "module": "Validation (Table 3.2)",
+    "input": "Duplicate email",
+    "expected": "Rejected with clear error",
+    "actual": "An account with this email already exists",
+    "pass": true
+  },
+  {
+    "id": "VAL-03",
+    "group": "validation",
+    "module": "Validation (Table 3.2)",
+    "input": "Weak password (no number / < 8 chars)",
+    "expected": "Rejected with clear error",
+    "actual": "Password must be at least 8 characters with a letter and a number",
+    "pass": true
+  },
+  {
+    "id": "VAL-04",
+    "group": "validation",
+    "module": "Validation (Table 3.2)",
+    "input": "Phone number with 10 digits",
+    "expected": "Rejected with clear error",
+    "actual": "Phone number must be 11 digits (e.g. 08012345678)",
+    "pass": true
+  },
+  {
+    "id": "VAL-05",
+    "group": "validation",
+    "module": "Validation (Table 3.2)",
+    "input": "Request category not in list",
+    "expected": "Rejected with clear error",
+    "actual": "Select a category from the list",
+    "pass": true
+  },
+  {
+    "id": "VAL-06",
+    "group": "validation",
+    "module": "Validation (Table 3.2)",
+    "input": "Severity omitted defaults to Medium",
+    "expected": "Rejected with clear error",
+    "actual": "Saved with severity \"Medium\"",
+    "pass": true
+  },
+  {
+    "id": "VAL-07",
+    "group": "validation",
+    "module": "Validation (Table 3.2)",
+    "input": "Description of 501 characters / 9 characters",
+    "expected": "Rejected with clear error",
+    "actual": "Description must be 10 to 500 characters",
+    "pass": true
+  },
+  {
+    "id": "VAL-08",
+    "group": "validation",
+    "module": "Validation (Table 3.2)",
+    "input": "Photo: GIF type and >5MB PNG",
+    "expected": "Rejected with clear error",
+    "actual": "GIF and >5MB image rejected; small PNG accepted",
+    "pass": true
+  },
+  {
+    "id": "IT-01",
+    "group": "integration",
+    "module": "Request + Notification",
+    "input": "Tenant submits request",
+    "expected": "Landlord notified within 5 seconds",
+    "actual": "Landlord notification visible after 10 ms (limit 5,000 ms)",
+    "pass": true
+  },
+  {
+    "id": "IT-02",
+    "group": "integration",
+    "module": "Request + Messaging",
+    "input": "Landlord replies to a request-linked message",
+    "expected": "Reply appears in tenant's thread, linked to the correct request",
+    "actual": "Reply appeared in tenant's thread for request #12; tenant notified",
+    "pass": true
+  },
+  {
+    "id": "IT-03",
+    "group": "integration",
+    "module": "Authentication + RBAC",
+    "input": "Maintenance staff opens the landlord-only reports page",
+    "expected": "Access denied; permission error shown",
+    "actual": "Staff and tenant tokens received 403 (\"Access denied for your role\")",
+    "pass": true
+  },
+  {
+    "id": "ST-01",
+    "group": "system",
+    "module": "End-to-end",
+    "input": "Tenant submits -> Landlord assigns -> Staff resolves -> Tenant notified",
+    "expected": "All status transitions reflected; tenant receives final notification",
+    "actual": "Status sequence Received -> In Progress -> Resolved; resolution timestamp set; tenant notified; resolution note in thread",
+    "pass": true
+  },
+  {
+    "id": "ST-02",
+    "group": "system",
+    "module": "Concurrency",
+    "input": "10 tenants submit requests at the same time for the same property",
+    "expected": "All requests logged distinctly; no data loss or overwrite",
+    "actual": "10 simultaneous submissions produced 10 distinct request IDs and 10 distinct stored records",
+    "pass": true
+  },
+  {
+    "id": "SEC-01",
+    "group": "security",
+    "module": "Bypass of role restrictions",
+    "input": "Direct API calls with tenant/staff tokens to restricted endpoints",
+    "expected": "Request rejected (access denied)",
+    "actual": "8 of 8 bypass attempts refused (403, 403, 403, 403, 404, 403, 404, 401)",
+    "pass": true
+  },
+  {
+    "id": "SEC-02",
+    "group": "security",
+    "module": "SQL injection",
+    "input": "Payloads such as ' OR '1'='1 in login, search and registration fields",
+    "expected": "Input rejected or neutralised; no data exposed",
+    "actual": "Login injections refused (401); injected search returned 0 rows (not all data); Users table intact after \"DROP TABLE\" payload stored as plain text",
+    "pass": true
+  },
+  {
+    "id": "SEC-03",
+    "group": "security",
+    "module": "Cross-site scripting",
+    "input": "Script tags submitted in message and description fields",
+    "expected": "Script sanitised and not executed",
+    "actual": "Angle brackets were HTML-escaped on the server (&lt;script&gt;); React renders the text without executing it",
+    "pass": true
+  },
+  {
+    "id": "SEC-04",
+    "group": "security",
+    "module": "Session expiry",
+    "input": "Use of an expired JWT",
+    "expected": "Request rejected; re-login required",
+    "actual": "Expired token -> 401 (\"Session expired. Please log in again.\"); tampered token -> 401",
+    "pass": true
+  },
+  {
+    "id": "SEC-05",
+    "group": "security",
+    "module": "Password-reset token",
+    "input": "Reuse or delayed use of a reset token",
+    "expected": "Token refused after use or expiry",
+    "actual": "First use succeeded; reuse refused (400); expired token refused (400); new password works",
+    "pass": true
+  },
+  {
+    "id": "SEC-06",
+    "group": "security",
+    "module": "Password storage",
+    "input": "Inspect stored credentials in the database",
+    "expected": "Passwords stored only as salted hashes",
+    "actual": "Stored value is a bcrypt hash (cost 10) with per-user salt; plaintext not present",
+    "pass": true
+  }
+]

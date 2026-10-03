@@ -1,0 +1,47 @@
+{
+  "screenshots": [],
+  "roleRedirect": {
+    "amina@demo.ng": {
+      "expectTab": "My requests",
+      "found": true
+    },
+    "landlord@demo.ng": {
+      "expectTab": "Properties",
+      "found": true
+    },
+    "musa@demo.ng": {
+      "expectTab": "My jobs",
+      "found": true
+    }
+  },
+  "lowBandwidth": [
+    {
+      "profile": "Slow 3G (400 kbps, 400 ms latency)",
+      "login_page_s": 1.98,
+      "dashboard_after_login_s": 0.84,
+      "submit_request_s": 1.35,
+      "transferred_kb": 58.6
+    },
+    {
+      "profile": "2G (250 kbps, 300 ms latency)",
+      "login_page_s": 2.42,
+      "dashboard_after_login_s": 0.83,
+      "submit_request_s": 0.84,
+      "transferred_kb": 57.6
+    }
+  ],
+  "files": [
+    "db_schema.png",
+    "landlord_dashboard.png",
+    "landlord_request_detail.png",
+    "login.png",
+    "notifications.png",
+    "properties.png",
+    "register.png",
+    "reports.png",
+    "request_thread.png",
+    "staff_job.png",
+    "tenant_new_request.png",
+    "tenant_requests.png"
+  ]
+}
